@@ -36,6 +36,7 @@ class TestMarketplacePurchaseApp(MarketplaceGaiaTestCase):
         payment.wait_for_buy_app_section_displayed()
         self.assertIn(APP_NAME, payment.app_name)
         payment.tap_buy_button()
+        self.wait_for_downloads_to_finish()
 
         # Confirm the installation and wait for the app icon to be present
         confirm_install = ConfirmInstall(self.marionette)
