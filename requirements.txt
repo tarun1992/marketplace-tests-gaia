@@ -1,2 +1,2 @@
+fxapom==1.0
 gaiatest-v2.0
--e git+https://github.com/bobsilverberg/fxapom.git@master#egg=fxapom
