@@ -4,6 +4,7 @@
 
 from marionette.by import By
 from marionette.keys import Keys
+from marionette.wait import Wait
 from gaiatest.apps.base import Base
 
 
@@ -72,7 +73,10 @@ class Marketplace(Base):
         self.wait_for_element_displayed(*self._offline_message_locator)
         return self.marionette.find_element(*self._offline_message_locator).text
 
-    def wait_for_notification_message_displayed(self):
+    def wait_for_notification_message_displayed(self, message=None):
+        if message:
+            Wait(marionette=self.marionette).until(
+                lambda m: self.notification_message == message)
         self.wait_for_element_displayed(*self._notification_locator)
 
     def wait_for_notification_message_not_displayed(self):

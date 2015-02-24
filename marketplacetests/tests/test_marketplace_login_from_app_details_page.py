@@ -34,9 +34,8 @@ class TestMarketplaceLoginFromAppDetailsPage(MarketplaceGaiaTestCase):
         review_box = AddReview(self.marionette)
 
         review_box.write_a_review(rating, body)
-        marketplace.wait_for_notification_message_displayed()
+        marketplace.wait_for_notification_message_displayed('Your review was successfully posted. Thanks!')
 
         # Check if review was added correctly
-        self.assertEqual(marketplace.notification_message, "Your review was successfully posted. Thanks!")
         self.assertEqual(details_page.first_review_rating, rating)
         self.assertEqual(details_page.first_review_body, body)
