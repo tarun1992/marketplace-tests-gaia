@@ -14,13 +14,15 @@ from marketplacetests.marketplace.app import Marketplace
 class TestMarketplaceAddReview(MarketplaceGaiaTestCase):
 
     def test_add_review(self):
-        APP_NAME = 'SoundCloud'
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         marketplace.launch()
+
+        app_name = marketplace.popular_apps[0].name
+
         marketplace.login(acct.email, acct.password)
-        details_page = marketplace.navigate_to_app(APP_NAME)
+        details_page = marketplace.navigate_to_app(app_name)
 
         current_time = str(time.time()).split('.')[0]
         rating = random.randint(1, 5)

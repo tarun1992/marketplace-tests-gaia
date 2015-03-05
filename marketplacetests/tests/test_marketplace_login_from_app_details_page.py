@@ -15,12 +15,13 @@ from marketplacetests.marketplace.app import Marketplace
 class TestMarketplaceLoginFromAppDetailsPage(MarketplaceGaiaTestCase):
 
     def test_marketplace_login_from_app_details_page(self):
-        APP_NAME = 'SoundCloud'
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         marketplace.launch()
-        details_page = marketplace.navigate_to_app(APP_NAME)
+
+        app_name = marketplace.popular_apps[0].name
+        details_page = marketplace.navigate_to_app(app_name)
 
         ff_accounts = details_page.tap_write_review(logged_in=False)
         ff_accounts.login(acct.email, acct.password)
