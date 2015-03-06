@@ -93,6 +93,7 @@ class Marketplace(Base):
         return [Result(self.marionette, app) for app in self.marionette.find_elements(*self._gallery_apps_locator)]
 
     def search(self, term):
+        self.wait_for_element_displayed(*self._search_locator)
         search_box = self.marionette.find_element(*self._search_locator)
 
         # search for the app
@@ -104,6 +105,7 @@ class Marketplace(Base):
 
     def set_region(self, region):
         # go to the :debug page
+        self.wait_for_element_displayed(*self._search_locator)
         search_box = self.marionette.find_element(*self._search_locator)
         search_box.send_keys(':debug')
         search_box.send_keys(Keys.RETURN)
