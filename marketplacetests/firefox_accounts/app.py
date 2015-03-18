@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette.by import By
+from marionette import expected, By, Wait
 from gaiatest.apps.base import Base
 
 
@@ -59,10 +59,14 @@ class FirefoxAccounts(Base):
         self.marionette.find_element(*self._next_button_locator).tap()
 
     def tap_sign_in(self):
-        self.keyboard.dismiss()
-        self.switch_to_correct_login_frame()
-        self.wait_for_element_displayed(*self._sign_in_button_locator)
-        self.marionette.find_element(*self._sign_in_button_locator).tap()
+        sign_in = Wait(self.marionette).until(
+            expected.element_present(*self._sign_in_button_locator))
+        Wait(self.marionette).until(expected.element_displayed(sign_in))
+        # This workaround is required for gaia v2.0, but can be removed in later versions
+        # as the bug has been fixed
+        # Bug 937053 - tap() method should calculate elementInView from the coordinates of the tap
+        self.marionette.execute_script('arguments[0].scrollIntoView(false);', [sign_in])
+        sign_in.tap()
 
     @property
     def is_not_you_logout_link_visible(self):
