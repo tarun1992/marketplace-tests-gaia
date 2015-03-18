@@ -11,7 +11,7 @@ from marketplacetests.marketplace.app import Marketplace
 class Debug(Marketplace):
 
     _back_button_locator = (By.ID, 'nav-back')
-    _region_select_locator = (By.ID, 'region')
+    _region_select_locator = (By.ID, 'debug-region')
 
     def __init__(self, marionette):
         Base.__init__(self, marionette)
@@ -21,6 +21,11 @@ class Debug(Marketplace):
         self.marionette.find_element(*self._back_button_locator).tap()
 
     def select_region(self, region):
-        self.marionette.find_element(*self._region_select_locator).tap()
+        element = self.marionette.find_element(*self._region_select_locator)
+        # This workaround is required for gaia v2.0, but can be removed in later versions
+        # as the bug has been fixed
+        # Bug 937053 - tap() method should calculate elementInView from the coordinates of the tap
+        self.marionette.execute_script('arguments[0].scrollIntoView(false);', [element])
+        element.tap()
         self.select(region)
         self.switch_to_marketplace_frame()
