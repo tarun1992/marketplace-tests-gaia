@@ -8,6 +8,9 @@ try:
 except (OSError, IOError):
     description = ''
 
+dependencies = ['gaiatest-v2.0',
+                'fxapom == 1.0']
+
 setup(name='marketplacetests',
       version='1.0',
       description="Gaia UI test for Marketplace",
@@ -20,4 +23,4 @@ setup(name='marketplacetests',
       license='MPL',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
-      )
+      install_requires=dependencies)
