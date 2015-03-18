@@ -1,2 +1,0 @@
-fxapom==1.0
-gaiatest-v2.0
