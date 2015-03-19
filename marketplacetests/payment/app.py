@@ -1,10 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 from gaiatest.apps.base import Base
-from marionette.by import By
-from marionette.wait import Wait
+from marionette import expected, By, Wait
 
 
 class Payment(Base):
@@ -56,22 +54,38 @@ class Payment(Base):
         return self.marionette.find_element(*self._pin_heading_locator).text
 
     def create_pin(self, pin):
-        self.wait_for_element_displayed(*self._pin_container_locator)
-        Wait(marionette=self.marionette).until(lambda m: 'Create' in self.pin_heading)
-        self.marionette.find_element(*self._pin_container_locator).send_keys(pin)
+        element = Wait(self.marionette).until(
+            expected.element_present(*self._pin_container_locator))
+        Wait(self.marionette).until(
+            expected.element_displayed(element))
+        Wait(self.marionette).until(lambda m: 'Create' in self.pin_heading)
+        self.keyboard.send(pin)
+        self.switch_to_payment_frame()
         self.tap_pin_continue()
 
-        # Workaround click because Marionette makes the keyboard disappear
-        self.marionette.find_element(*self._pin_container_locator).click()
+        self.confirm_pin(pin)
 
-        Wait(marionette=self.marionette).until(lambda m: 'Confirm' in self.pin_heading)
-        self.marionette.find_element(*self._pin_container_locator).send_keys(pin)
+    def confirm_pin(self, pin):
+        Wait(self.marionette).until(lambda m: 'Confirm' in self.pin_heading)
+        element = Wait(self.marionette).until(
+            expected.element_present(*self._pin_container_locator))
+        Wait(self.marionette).until(
+            expected.element_displayed(element))
+        # We need to click() on the pin container to display the keyboard
+        # a tap() does not work
+        element.click()
+        self.keyboard.send(pin)
+        self.switch_to_payment_frame()
         self.tap_pin_continue()
 
     def enter_pin(self, pin):
-        self.wait_for_element_displayed(*self._pin_container_locator)
-        Wait(marionette=self.marionette).until(lambda m: 'Enter PIN' in self.pin_heading)
-        self.marionette.find_element(*self._pin_container_locator).send_keys(pin)
+        element = Wait(self.marionette).until(
+            expected.element_present(*self._pin_container_locator))
+        Wait(self.marionette).until(
+            expected.element_displayed(element))
+        Wait(self.marionette).until(lambda m: 'Enter' in self.pin_heading)
+        self.keyboard.send(pin)
+        self.switch_to_payment_frame()
         self.tap_pin_continue()
 
     def tap_cancel_pin(self):
@@ -80,8 +94,10 @@ class Payment(Base):
         self.apps.switch_to_displayed_app()
 
     def tap_pin_continue(self):
-        button = self.marionette.find_element(*self._pin_continue_button_locator)
-        Wait(marionette=self.marionette).until(lambda m: button.is_enabled())
+        button = Wait(self.marionette).until(
+            expected.element_present(*self._pin_continue_button_locator))
+        Wait(self.marionette).until(expected.element_displayed(button))
+        Wait(self.marionette).until(expected.element_enabled(button))
         button.tap()
 
     def wait_for_buy_app_section_displayed(self):
