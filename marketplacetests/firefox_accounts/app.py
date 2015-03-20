@@ -32,11 +32,9 @@ class FirefoxAccounts(Base):
             self.switch_login_frame(self._in_app_login_frame_locator)
 
     def login(self, email, password):
-        self.wait_for_element_displayed(*self._email_input_locator)
-        self.type_email(email)
-        if self.is_element_present(*self._next_button_locator):
-            self.tap_next()
         self.wait_for_element_displayed(*self._password_input_locator)
+        if self.is_element_present(*self._email_input_locator):
+            self.type_email(email)
         self.type_password(password)
         self.tap_sign_in()
 
