@@ -43,5 +43,6 @@ class TestMakeInAppPayment(MarketplaceGaiaTestCase):
         self.assertEqual('test 0.10USD', payment.in_app_product_name)
 
         payment.tap_buy_button()
+        self.apps.switch_to_displayed_app()
         tester_app.wait_for_bought_products_displayed()
         self.assertEqual('test 0.10USD', tester_app.bought_product_text)
