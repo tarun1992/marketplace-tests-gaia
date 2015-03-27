@@ -19,7 +19,9 @@ class Payment(Marketplace):
     _pin_continue_button_locator = (By.CSS_SELECTOR, '.cta')
     _pin_heading_locator = (By.CSS_SELECTOR, 'section.content h1')
     _pin_error_locator = (By.CSS_SELECTOR, 'section.content p.err-msg')
+    _forgot_pin_locator = (By.CSS_SELECTOR, 'p.forgot-pin a')
     _cancel_pin_button_locator = (By.CSS_SELECTOR, '.button.cancel')
+    _reset_pin_button_locator = (By.XPATH, "//button[text()='Reset']")
 
     # Final buy app panel
     _app_name_locator = (By.CSS_SELECTOR, '.product .title')
@@ -69,7 +71,6 @@ class Payment(Marketplace):
         self.keyboard.send(pin)
         self.switch_to_payment_frame()
         self.tap_pin_continue()
-
         self.confirm_pin(pin)
 
     def confirm_pin(self, pin):
@@ -90,7 +91,7 @@ class Payment(Marketplace):
             expected.element_present(*self._pin_container_locator))
         Wait(self.marionette).until(
             expected.element_displayed(element))
-        Wait(self.marionette).until(lambda m: 'Enter' in self.pin_heading)
+        Wait(self.marionette).until(lambda m: 'PIN' in self.pin_heading)
         self.keyboard.send(pin)
         self.switch_to_payment_frame()
         self.tap_pin_continue()
@@ -112,6 +113,20 @@ class Payment(Marketplace):
 
     def tap_buy_button(self):
         self._tap_payment_button(self._buy_button_locator)
+
+    def tap_forgot_pin(self):
+        self.wait_for_element_displayed(*self._forgot_pin_locator)
+        self.marionette.find_element(*self._forgot_pin_locator).tap()
+
+    def tap_reset_button(self):
+        button = Wait(self.marionette).until(
+            expected.element_present(*self._reset_pin_button_locator))
+        Wait(self.marionette).until(expected.element_displayed(button))
+        # This workaround is required for gaia v2.0, but can be removed in later versions
+        # as the bug has been fixed
+        # Bug 937053 - tap() method should calculate elementInView from the coordinates of the tap
+        self.marionette.execute_script('arguments[0].scrollIntoView(false);', [button])
+        button.tap()
 
     def tap_cancel_button(self):
         self._tap_payment_button(self._cancel_button_locator)
