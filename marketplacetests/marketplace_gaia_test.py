@@ -29,32 +29,28 @@ class MarketplaceGaiaTestCase(GaiaTestCase):
         # This is used to tell FxA whether to create a dev or prod account
         self.base_url = 'https://marketplace-dev.allizom.org'
 
-    def install_in_app_payments_test_app(self):
+    def install_in_app_payments_test_app(self, app_name):
 
-        self.homescreen = Homescreen(self.marionette)
+        homescreen = Homescreen(self.marionette)
 
-        if not self.apps.is_app_installed(self.app_name):
+        # Remove the app if already installed
+        if self.apps.is_app_installed(app_name):
+            raise Exception('The app %s is already installed.' % app_name)
 
-            marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-            home_page = marketplace.launch()
-            details_page = home_page.navigate_to_app(self.app_name)
-            details_page.tap_install_button()
-            self.wait_for_downloads_to_finish()
+        marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
+        home_page = marketplace.launch()
+        details_page = home_page.navigate_to_app(app_name)
+        details_page.tap_install_button()
+        self.wait_for_downloads_to_finish()
 
-            # Confirm the installation and wait for the app icon to be present
-            confirm_install = ConfirmInstall(self.marionette)
-            confirm_install.tap_confirm()
+        # Confirm the installation and wait for the app icon to be present
+        confirm_install = ConfirmInstall(self.marionette)
+        confirm_install.tap_confirm()
 
         self.device.touch_home_button()
         self.apps.switch_to_displayed_app()
-        self.homescreen.wait_for_app_icon_present(self.app_name)
-
-    def create_account_and_change_its_region(self):
-        self.acct = FxATestAccount(base_url=self.base_url).create_account()
-        marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        home_page = marketplace.launch()
-        settings = home_page.login(self.acct.email, self.acct.password)
-        settings.set_region('United States')
+        homescreen.wait_for_app_icon_present(app_name)
+        return homescreen
 
     @property
     def email(self):

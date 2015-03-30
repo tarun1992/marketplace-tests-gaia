@@ -122,6 +122,7 @@ class Payment(Marketplace):
         button = Wait(self.marionette).until(
             expected.element_present(*self._reset_pin_button_locator))
         Wait(self.marionette).until(expected.element_displayed(button))
+        Wait(self.marionette).until(expected.element_enabled(button))
         # This workaround is required for gaia v2.0, but can be removed in later versions
         # as the bug has been fixed
         # Bug 937053 - tap() method should calculate elementInView from the coordinates of the tap
@@ -140,4 +141,13 @@ class Payment(Marketplace):
         self.marionette.find_element(*button_locator).tap()
         self.marionette.switch_to_frame()
         self.wait_for_element_not_present(*self._payment_frame_locator)
+        self.return_to_app()
+
+    def return_to_app(self):
         self.switch_to_marketplace_frame()
+
+
+class InAppPayment(Payment):
+
+    def return_to_app(self):
+        self.apps.switch_to_displayed_app()

@@ -2,23 +2,22 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from fxapom.fxapom import FxATestAccount
 from marionette import Wait
+from fxapom.fxapom import FxATestAccount
 
-from marketplacetests.in_app_payments.in_app import InAppPaymentTester
 from marketplacetests.payment.app import InAppPayment
+from marketplacetests.in_app_payments.in_app import InAppPaymentTester
 from marketplacetests.marketplace_gaia_test import MarketplaceGaiaTestCase
 
 
-class TestMakeInAppPayment(MarketplaceGaiaTestCase):
+class TestNotYouLogoutFromInAppPayment(MarketplaceGaiaTestCase):
 
     test_data = {
         'app_name': 'Testing In-App-Payments',
         'app_title': 'In-App-Payments',
-        'pin': '1234',
         'product': 'test 0.99 USD'}
 
-    def test_make_an_in_app_payment(self):
+    def test_not_you_logout_from_in_app_payment(self):
 
         acct = FxATestAccount(base_url=self.base_url).create_account()
         homescreen = self.install_in_app_payments_test_app(self.test_data['app_name'])
@@ -36,14 +35,14 @@ class TestMakeInAppPayment(MarketplaceGaiaTestCase):
         fxa.login(acct.email, acct.password)
 
         payment = InAppPayment(self.marionette)
-        payment.create_pin(self.test_data['pin'])
+        payment.tap_cancel_pin()
 
-        self.assertEqual('Confirm Payment', payment.confirm_payment_header_text)
-        self.assertEqual(self.test_data['product'], payment.in_app_product_name)
+        fxa = self.tester_app.tap_buy_product(self.test_data['product'])
+        self.assertTrue(fxa.is_not_you_logout_link_visible)
+        self.assertEqual('You are signed in as: %s' % acct.email, 'You are signed in as: %s' % fxa.email_text)
 
-        payment.tap_buy_button()
-        self.tester_app.wait_for_bought_products_displayed()
-        self.assertEqual(self.test_data['product'], self.tester_app.bought_product_text)
+        fxa.tap_not_you()
+        fxa.wait_for_password_field_visible()
 
     def tearDown(self):
         self.apps.uninstall(self.test_data['app_name'])
