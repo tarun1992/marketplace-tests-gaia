@@ -3,10 +3,13 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette.by import By
-from gaiatest.apps.base import Base
+
+from marketplacetests.marketplace.app import Marketplace
 
 
-class Details(Base):
+class Details(Marketplace):
+
+    _page_loaded_locator = (By.CSS_SELECTOR, 'section.app-reviews')
 
     _write_review_locator = (By.CSS_SELECTOR, 'a.review-button')
     _app_info_locator = (By.CSS_SELECTOR, '.detail .info')
@@ -15,8 +18,8 @@ class Details(Base):
     _install_button_locator = (By.CSS_SELECTOR, '.detail .info button.product.install')
 
     def __init__(self, marionette):
-        Base.__init__(self, marionette)
-        self.wait_for_element_present(*self._app_info_locator)
+        Marketplace.__init__(self, marionette)
+        self.wait_for_page_loaded()
 
     @property
     def is_app_details_displayed(self):
@@ -42,7 +45,7 @@ class Details(Base):
             from marketplacetests.firefox_accounts.app import FirefoxAccounts
             return FirefoxAccounts(self.marionette)
         else:
-            from marketplacetests.marketplace.regions.review_box import AddReview
+            from marketplacetests.marketplace.regions.add_review import AddReview
             return AddReview(self.marionette)
 
     def tap_install_button(self):

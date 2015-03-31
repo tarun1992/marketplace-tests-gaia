@@ -13,9 +13,9 @@ class TestMarketplaceLoginFromMyApps(MarketplaceGaiaTestCase):
         password = self.testvars['marketplace']['password']
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
+        home_page = marketplace.launch()
 
-        settings = marketplace.tap_settings()
+        settings = home_page.tap_settings()
         my_apps = settings.go_to_my_apps_page()
 
         self.assertEqual(my_apps.login_required_message, 'You must be signed in to view your apps.')
@@ -25,11 +25,11 @@ class TestMarketplaceLoginFromMyApps(MarketplaceGaiaTestCase):
 
         # switch back to Marketplace
         marketplace.switch_to_marketplace_frame()
-        marketplace.wait_for_notification_message_displayed()
-        marketplace.wait_for_notification_message_not_displayed()
+        my_apps.wait_for_notification_message_displayed()
+        my_apps.wait_for_notification_message_not_displayed()
 
         self.wait_for_condition(lambda m: len(my_apps.my_apps_list) > 0)
-        my_apps.go_to_settings_page()
+        settings = my_apps.go_to_settings_page()
 
         # Sign out, which should return to the Marketplace home screen
         settings.tap_sign_out()

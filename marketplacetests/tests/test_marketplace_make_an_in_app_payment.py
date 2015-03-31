@@ -11,33 +11,30 @@ from marketplacetests.marketplace_gaia_test import MarketplaceGaiaTestCase
 
 class TestMakeInAppPayment(MarketplaceGaiaTestCase):
 
-    APP_NAME = 'Testing In-App-Payments'
-    APP_TITLE = 'In-App-Payments'
-    PIN = '1234'
+    def test_make_an_in_app_payment(self):
 
-    def setUp(self):
-        MarketplaceGaiaTestCase.setUp(self)
+        self.app_name = 'Testing In-App-Payments'
+        app_title = 'In-App-Payments'
+        pin = '1234'
 
         self.create_account_and_change_its_region()
         self.install_in_app_payments_test_app()
 
-    def test_make_an_in_app_payment(self):
-
         # Verify that the app icon is visible on one of the homescreen pages
         self.assertTrue(
-            self.homescreen.is_app_installed(self.APP_NAME),
-            'App %s not found on homescreen' % self.APP_NAME)
+            self.homescreen.is_app_installed(self.app_name),
+            'App %s not found on homescreen' % self.app_name)
 
         # Click icon and wait for h1 element displayed
-        self.homescreen.installed_app(self.APP_NAME).tap_icon()
-        Wait(self.marionette).until(lambda m: m.title == self.APP_TITLE)
+        self.homescreen.installed_app(self.app_name).tap_icon()
+        Wait(self.marionette).until(lambda m: m.title == app_title)
 
         tester_app = InAppPayment(self.marionette)
         fxa = tester_app.tap_buy_product()
         fxa.login(self.acct.email, self.acct.password)
 
         payment = Payment(self.marionette)
-        payment.create_pin(self.PIN)
+        payment.create_pin(pin)
 
         self.assertEqual('Confirm Payment', payment.confirm_payment_header_text)
         self.assertEqual('test 0.10USD', payment.in_app_product_name)

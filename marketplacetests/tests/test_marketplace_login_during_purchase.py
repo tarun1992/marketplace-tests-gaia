@@ -14,27 +14,27 @@ class TestMarketplaceLoginDuringPurchase(MarketplaceGaiaTestCase):
 
     def test_login_during_purchase(self):
 
-        APP_NAME = 'Test Zippy With Me'
-        PIN = '1234'
+        app_name = 'Test Zippy With Me'
+        pin = '1234'
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
-        if self.apps.is_app_installed(APP_NAME):
-            self.apps.uninstall(APP_NAME)
+        if self.apps.is_app_installed(app_name):
+            self.apps.uninstall(app_name)
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
+        home_page = marketplace.launch()
 
-        marketplace.set_region('United States')
+        home_page.set_region('United States')
 
-        details_page = marketplace.navigate_to_app(APP_NAME)
+        details_page = home_page.navigate_to_app(app_name)
         details_page.tap_install_button()
 
         ff_accounts = FirefoxAccounts(self.marionette)
         ff_accounts.login(acct.email, acct.password)
 
         payment = Payment(self.marionette)
-        payment.create_pin(PIN)
+        payment.create_pin(pin)
 
         # Wait and check if confirm payment window appears
         payment.wait_for_buy_app_section_displayed()
-        self.assertIn(APP_NAME, payment.app_name)
+        self.assertIn(app_name, payment.app_name)

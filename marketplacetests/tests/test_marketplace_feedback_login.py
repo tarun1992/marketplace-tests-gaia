@@ -8,27 +8,24 @@ from marketplacetests.marketplace.app import Marketplace
 
 
 class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
-    feedback_submitted_message = u'Feedback submitted. Thanks!'
-    test_comment = 'This is a test comment.'
 
     def test_marketplace_feedback_user(self):
+        feedback_submitted_message = u'Feedback submitted. Thanks!'
+        test_comment = 'This is a test comment.'
+
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
         # launch marketplace dev and go to marketplace
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
-        marketplace.login(acct.email, acct.password)
+        home_page = marketplace.launch()
+        settings = home_page.login(acct.email, acct.password)
 
         # go to feedback tab
-        marketplace.select_setting_feedback()
+        settings.select_setting_feedback()
 
         # enter and submit your feedback
-        marketplace.enter_feedback(self.test_comment)
-        marketplace.submit_feedback()
+        settings.enter_feedback(test_comment)
+        settings.submit_feedback()
 
-        # catch the notification
-        marketplace.wait_for_notification_message_displayed()
-        message_content = marketplace.notification_message
-
-        # verify if the notification is right
-        self.assertEqual(message_content, self.feedback_submitted_message)
+        # wait for the notification
+        settings.wait_for_notification_message_displayed(feedback_submitted_message)

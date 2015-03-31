@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from gaiatest.apps.base import Base
 from marionette.by import By
 
 from marketplacetests.marketplace.app import Marketplace
@@ -10,12 +9,14 @@ from marketplacetests.marketplace.app import Marketplace
 
 class Debug(Marketplace):
 
+    _page_loaded_locator = (By.CSS_SELECTOR, 'section.debug')
+
     _back_button_locator = (By.ID, 'nav-back')
     _region_select_locator = (By.ID, 'debug-region')
 
     def __init__(self, marionette):
-        Base.__init__(self, marionette)
-        self.wait_for_element_displayed(*self._region_select_locator)
+        Marketplace.__init__(self, marionette)
+        self.wait_for_page_loaded()
 
     def tap_back(self):
         self.marionette.find_element(*self._back_button_locator).tap()

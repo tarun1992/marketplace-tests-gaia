@@ -14,27 +14,27 @@ class TestMarketplacePurchaseApp(MarketplaceGaiaTestCase):
 
     def test_purchase_app(self):
 
-        APP_NAME = 'Test Zippy With Me'
-        PIN = '1234'
+        app_name = 'Test Zippy With Me'
+        pin = '1234'
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
-        if self.apps.is_app_installed(APP_NAME):
-            self.apps.uninstall(APP_NAME)
+        if self.apps.is_app_installed(app_name):
+            self.apps.uninstall(app_name)
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
+        home_page = marketplace.launch()
 
-        marketplace.login(acct.email, acct.password)
+        settings = home_page.login(acct.email, acct.password)
 
-        marketplace.set_region('United States')
+        settings.set_region('United States')
 
-        details_page = marketplace.navigate_to_app(APP_NAME)
+        details_page = settings.navigate_to_app(app_name)
         details_page.tap_install_button()
 
         payment = Payment(self.marionette)
-        payment.create_pin(PIN)
+        payment.create_pin(pin)
         payment.wait_for_buy_app_section_displayed()
-        self.assertIn(APP_NAME, payment.app_name)
+        self.assertIn(app_name, payment.app_name)
         payment.tap_buy_button()
         self.wait_for_downloads_to_finish()
 
@@ -42,6 +42,6 @@ class TestMarketplacePurchaseApp(MarketplaceGaiaTestCase):
         confirm_install = ConfirmInstall(self.marionette)
         confirm_install.tap_confirm()
 
-        self.assertEqual('%s installed' % APP_NAME, marketplace.install_notification_message)
+        self.assertEqual('%s installed' % app_name, details_page.install_notification_message)
         marketplace.switch_to_marketplace_frame()
         self.assertEqual('Open', details_page.install_button_text)

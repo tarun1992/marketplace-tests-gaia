@@ -7,7 +7,7 @@ import random
 
 from fxapom.fxapom import FxATestAccount
 
-from marketplacetests.marketplace.regions.review_box import AddReview
+from marketplacetests.marketplace.regions.add_review import AddReview
 from marketplacetests.marketplace_gaia_test import MarketplaceGaiaTestCase
 from marketplacetests.marketplace.app import Marketplace
 
@@ -18,10 +18,11 @@ class TestMarketplaceLoginFromAppDetailsPage(MarketplaceGaiaTestCase):
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
+        home_page = marketplace.launch()
 
-        app_name = marketplace.popular_apps[0].name
-        details_page = marketplace.navigate_to_app(app_name)
+        popular_apps_page = home_page.popular_apps_page
+        app_name = popular_apps_page.popular_apps[0].name
+        details_page = popular_apps_page.navigate_to_app(app_name)
 
         ff_accounts = details_page.tap_write_review(logged_in=False)
         ff_accounts.login(acct.email, acct.password)
@@ -32,10 +33,10 @@ class TestMarketplaceLoginFromAppDetailsPage(MarketplaceGaiaTestCase):
         current_time = str(time.time()).split('.')[0]
         rating = random.randint(1, 5)
         body = 'This is a test %s' % current_time
-        review_box = AddReview(self.marionette)
+        review_page = AddReview(self.marionette)
 
-        review_box.write_a_review(rating, body)
-        marketplace.wait_for_notification_message_displayed('Your review was successfully posted. Thanks!')
+        details_page = review_page.write_a_review(rating, body)
+        details_page.wait_for_notification_message_displayed('Your review was successfully posted. Thanks!')
 
         # Check if review was added correctly
         self.assertEqual(details_page.first_review_rating, rating)

@@ -12,35 +12,31 @@ from marketplacetests.marketplace.app import Marketplace
 
 class TestSearchMarketplaceAndInstallApp(MarketplaceGaiaTestCase):
 
-    APP_INSTALLED = False
-
-    # System app confirmation button to confirm installing an app
-    _yes_button_locator = (By.ID, 'app-install-install-button')
-
-    # System app notification install message
-    _notification_install_locator = (By.CSS_SELECTOR, '#system-banner > p')
-
     def test_search_and_install_app(self):
-        marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
 
-        self.app_name = marketplace.popular_apps[0].name
+        marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
+        home_page = marketplace.launch()
+
+        popular_apps_page = home_page.popular_apps_page
+        app_name = popular_apps_page.popular_apps[0].name
+        app_author = popular_apps_page.popular_apps[0].author
 
         # Remove the app if already installed
-        if self.apps.is_app_installed(self.app_name):
+        if self.apps.is_app_installed(app_name):
             self.apps.kill(marketplace.app)
-            self.apps.uninstall(self.app_name)
-            marketplace.launch()
+            self.apps.uninstall(app_name)
+            home_page = marketplace.launch()
+            popular_apps_page = home_page.popular_apps_page
+
         marketplace.switch_to_marketplace_frame()
 
-        app_author = marketplace.popular_apps[0].author
-        results = marketplace.search(self.app_name)
+        results = popular_apps_page.search(app_name)
 
         self.assertGreater(len(results.search_results), 0, 'No results found.')
 
         first_result = results.search_results[0]
 
-        self.assertEquals(first_result.name, self.app_name, 'First app has the wrong name.')
+        self.assertEquals(first_result.name, app_name, 'First app has the wrong name.')
         self.assertEquals(first_result.author, app_author, 'First app has the wrong author.')
 
         # Find and click the install button to the install the web app
@@ -53,8 +49,7 @@ class TestSearchMarketplaceAndInstallApp(MarketplaceGaiaTestCase):
         confirm_install = ConfirmInstall(self.marionette)
         confirm_install.tap_confirm()
 
-        self.assertEqual('%s installed' % self.app_name, marketplace.install_notification_message)
-        self.APP_INSTALLED = True
+        self.assertEqual('%s installed' % app_name, results.install_notification_message)
 
         # Press Home button
         self.device.touch_home_button()
@@ -63,4 +58,4 @@ class TestSearchMarketplaceAndInstallApp(MarketplaceGaiaTestCase):
         homescreen = Homescreen(self.marionette)
         self.apps.switch_to_displayed_app()
 
-        self.assertTrue(homescreen.is_app_installed(self.app_name))
+        self.assertTrue(homescreen.is_app_installed(app_name))

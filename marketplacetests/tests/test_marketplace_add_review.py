@@ -17,23 +17,24 @@ class TestMarketplaceAddReview(MarketplaceGaiaTestCase):
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
+        home_page = marketplace.launch()
 
-        app_name = marketplace.popular_apps[0].name
+        popular_apps_page = home_page.popular_apps_page
+        app_name = popular_apps_page.popular_apps[0].name
 
-        marketplace.login(acct.email, acct.password)
-        details_page = marketplace.navigate_to_app(app_name)
+        settings = popular_apps_page.login(acct.email, acct.password)
+        details_page = settings.navigate_to_app(app_name)
 
         current_time = str(time.time()).split('.')[0]
         rating = random.randint(1, 5)
         body = 'This is a test %s' % current_time
 
-        review_box = details_page.tap_write_review()
-        review_box.write_a_review(rating, body)
+        review_page = details_page.tap_write_review()
+        details_page = review_page.write_a_review(rating, body)
 
-        marketplace.wait_for_notification_message_displayed()
+        details_page.wait_for_notification_message_displayed()
 
         # Check if review was added correctly
-        self.assertEqual(marketplace.notification_message, "Your review was successfully posted. Thanks!")
+        self.assertEqual(details_page.notification_message, "Your review was successfully posted. Thanks!")
         self.assertEqual(details_page.first_review_rating, rating)
         self.assertEqual(details_page.first_review_body, body)

@@ -7,26 +7,22 @@ from marketplacetests.marketplace.app import Marketplace
 
 
 class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
-    feedback_submitted_message = u'Feedback submitted. Thanks!'
-    test_comment = 'This is a test comment.'
 
     def test_marketplace_feedback_anonymous(self):
+        feedback_submitted_message = u'Feedback submitted. Thanks!'
+        test_comment = 'This is a test comment.'
 
         # launch marketplace dev and go to marketplace
-        self.marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        self.marketplace.launch()
+        marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
+        home_page = marketplace.launch()
 
         # go to settings page
-        self.marketplace.tap_settings()
-        self.marketplace.select_setting_feedback()
+        settings = home_page.tap_settings()
+        settings.select_setting_feedback()
 
         # enter and submit your feedback
-        self.marketplace.enter_feedback(self.test_comment)
-        self.marketplace.submit_feedback()
+        settings.enter_feedback(test_comment)
+        settings.submit_feedback()
 
-        # catch the notification
-        self.marketplace.wait_for_notification_message_displayed()
-        message_content = self.marketplace.notification_message
-
-        # verify if the notification is right
-        self.assertEqual(message_content, self.feedback_submitted_message)
+        # wait for the notification
+        settings.wait_for_notification_message_displayed(feedback_submitted_message)

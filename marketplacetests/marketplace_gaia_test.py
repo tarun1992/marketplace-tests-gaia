@@ -33,11 +33,11 @@ class MarketplaceGaiaTestCase(GaiaTestCase):
 
         self.homescreen = Homescreen(self.marionette)
 
-        if not self.apps.is_app_installed(self.APP_NAME):
+        if not self.apps.is_app_installed(self.app_name):
 
             marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-            marketplace.launch()
-            details_page = marketplace.navigate_to_app(self.APP_NAME)
+            home_page = marketplace.launch()
+            details_page = marketplace.navigate_to_app(self.app_name)
             details_page.tap_install_button()
             self.wait_for_downloads_to_finish()
 
@@ -47,14 +47,14 @@ class MarketplaceGaiaTestCase(GaiaTestCase):
 
         self.device.touch_home_button()
         self.apps.switch_to_displayed_app()
-        self.homescreen.wait_for_app_icon_present(self.APP_NAME)
+        self.homescreen.wait_for_app_icon_present(self.app_name)
 
     def create_account_and_change_its_region(self):
         self.acct = FxATestAccount(base_url=self.base_url).create_account()
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
-        marketplace.login(self.acct.email, self.acct.password)
-        marketplace.set_region('United States')
+        home_page = marketplace.launch()
+        settings = marketplace.login(self.acct.email, self.acct.password)
+        settings.set_region('United States')
 
     @property
     def email(self):

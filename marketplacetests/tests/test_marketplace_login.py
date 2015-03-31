@@ -9,27 +9,24 @@ from marketplacetests.marketplace.app import Marketplace
 
 class TestMarketplaceLogin(MarketplaceGaiaTestCase):
 
-    def setUp(self):
-        MarketplaceGaiaTestCase.setUp(self)
-
-        self.marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        self.marketplace.launch()
-
     def test_login_marketplace(self):
         # https://moztrap.mozilla.org/manage/case/4134/
+        marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
+        home_page = marketplace.launch()
+
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
-        settings = self.marketplace.tap_settings()
+        settings = home_page.tap_settings()
         ff_accounts = settings.tap_sign_in()
 
         ff_accounts.login(acct.email, acct.password)
 
         # switch back to Marketplace
-        self.marketplace.switch_to_marketplace_frame()
+        marketplace.switch_to_marketplace_frame()
 
         # wait for signed-in notification at the bottom of the screen to clear
         settings.wait_for_sign_out_button()
-        self.marketplace.wait_for_notification_message_not_displayed()
+        settings.wait_for_notification_message_not_displayed()
 
         # Verify that user is logged in
         self.assertEqual(acct.email, settings.email)

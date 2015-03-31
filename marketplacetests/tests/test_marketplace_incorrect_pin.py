@@ -22,13 +22,13 @@ class TestMarketplaceIncorrectPin(MarketplaceGaiaTestCase):
             self.apps.uninstall(app_name)
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
-        marketplace.launch()
+        home_page = marketplace.launch()
 
-        marketplace.login(acct.email, acct.password)
+        settings = home_page.login(acct.email, acct.password)
 
-        marketplace.set_region('United States')
+        settings.set_region('United States')
 
-        details_page = marketplace.navigate_to_app(app_name)
+        details_page = settings.navigate_to_app(app_name)
         details_page.tap_install_button()
 
         payment = Payment(self.marionette)
@@ -37,7 +37,7 @@ class TestMarketplaceIncorrectPin(MarketplaceGaiaTestCase):
         self.assertIn(app_name, payment.app_name)
         payment.tap_cancel_button()
 
-        marketplace.wait_for_notification_message_displayed('Payment cancelled.')
+        details_page.wait_for_notification_message_displayed('Payment cancelled.')
         details_page.tap_install_button()
         payment.switch_to_payment_frame()
         payment.enter_pin(invalid_pin)

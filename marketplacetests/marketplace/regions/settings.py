@@ -3,10 +3,20 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette.by import By
-from gaiatest.apps.base import Base
+
+from marketplacetests.marketplace.app import Marketplace
 
 
-class Settings(Base):
+class Settings(Marketplace):
+
+    _page_loaded_locator = (By.CSS_SELECTOR, 'form.account-settings')
+
+    # Marketplace settings tabs
+    _account_tab_locator = (By.CSS_SELECTOR, 'a[href="/settings"]')
+    _my_apps_tab_locator = (By.CSS_SELECTOR, 'a[href="/purchases"]')
+    _feedback_tab_locator = (By.CSS_SELECTOR, 'a[href="/feedback"]')
+    _feedback_textarea_locator = (By.NAME, 'feedback')
+    _feedback_submit_button_locator = (By.CSS_SELECTOR, 'button[type="submit"]')
 
     _email_locator = (By.CSS_SELECTOR, '.email.account-field > p')
     _save_locator = (By.CSS_SELECTOR, 'footer > p > button')
@@ -19,8 +29,9 @@ class Settings(Base):
     _login_required_message_locator = (By.CSS_SELECTOR, '.only-logged-out .notice')
 
     def __init__(self, marionette):
-        Base.__init__(self, marionette)
-        self.wait_for_element_displayed(*self._sign_in_button_locator)
+        Marketplace.__init__(self, marionette)
+        self.wait_for_page_loaded()
+        self.wait_for_sign_in_displayed()
 
     def tap_back(self):
         self.marionette.find_element(*self._back_button_locator).tap()
@@ -58,8 +69,27 @@ class Settings(Base):
         self.marionette.find_element(*self._my_apps_tab_locator).tap()
         return MyApps(self.marionette)
 
+    def select_setting_feedback(self):
+        self.marionette.find_element(*self._feedback_tab_locator).tap()
 
-class MyApps(Base):
+    def select_setting_account(self):
+        self.marionette.find_element(*self._account_tab_locator).tap()
+
+    def select_setting_my_apps(self):
+        self.marionette.find_element(*self._my_apps_tab_locator).tap()
+
+    def enter_feedback(self, feedback_text):
+        feedback = self.marionette.find_element(*self._feedback_textarea_locator)
+        feedback.clear()
+        feedback.send_keys(feedback_text)
+        self.switch_to_marketplace_frame()
+
+    def submit_feedback(self):
+        self.wait_for_element_displayed(*self._feedback_submit_button_locator)
+        self.marionette.find_element(*self._feedback_submit_button_locator).tap()
+
+
+class MyApps(Marketplace):
 
     _login_required_message_locator = (By.CSS_SELECTOR, '#account-settings .main div p')
     _my_apps_list_locator = (By.CSS_SELECTOR, '.item.result')

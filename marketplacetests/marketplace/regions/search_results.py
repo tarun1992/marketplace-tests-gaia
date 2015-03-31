@@ -3,25 +3,28 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette.by import By
-from gaiatest.apps.base import Base
 from gaiatest.apps.base import PageRegion
 
+from marketplacetests.marketplace.app import Marketplace
 
-class SearchResults(Base):
+
+class SearchResults(Marketplace):
+
+    _page_loaded_locator = (By.CSS_SELECTOR, 'ul.app-list')
 
     _search_results_area_locator = (By.ID, 'search-results')
-    _search_results_loading_locator = (By.CSS_SELECTOR, 'div.loading')
     _search_result_locator = (By.CSS_SELECTOR, '#search-results li.item')
 
     def __init__(self, marionette):
-        Base.__init__(self, marionette)
-        self.wait_for_element_not_present(*self._search_results_loading_locator)
+        Marketplace.__init__(self, marionette)
+        self.wait_for_page_loaded()
 
     @property
     def search_results(self):
         self.wait_for_element_displayed(*self._search_result_locator)
         search_results = self.marionette.find_elements(*self._search_result_locator)
         return [Result(self.marionette, result) for result in search_results]
+
 
 class Result(PageRegion):
 
