@@ -4,10 +4,11 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.app import Marketplace
+from marketplacetests.marketplace.regions.base_region import BaseRegion
 from marketplacetests.marketplace.regions.app_details import Details
 
-class AddReview(Marketplace):
+
+class AddReview(BaseRegion):
     """
     Page for adding reviews.
     """
@@ -17,10 +18,6 @@ class AddReview(Marketplace):
     _add_review_input_field_locator = (By.ID, 'review-body')
     _submit_review_button_locator = (By.CSS_SELECTOR, 'button[type="submit"]')
     _rating_locator = (By.CSS_SELECTOR, ".ratingwidget.stars-0 > label[data-stars='%s']")
-
-    def __init__(self, marionette):
-        Marketplace.__init__(self, marionette)
-        self.wait_for_page_loaded()
 
     def set_review_rating(self, rating):
         self.marionette.find_element(self._rating_locator[0], self._rating_locator[1] % rating).tap()

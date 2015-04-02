@@ -4,19 +4,15 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.app import Marketplace
+from marketplacetests.marketplace.regions.base_region import BaseRegion
 from marketplacetests.marketplace.regions.search_results import Result
 
 
-class Home(Marketplace):
+class Home(BaseRegion):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'div.feed-home')
 
     _popular_apps_tab_locator = (By.CSS_SELECTOR, 'a[href="/popular"]')
-
-    def __init__(self, marionette):
-        Marketplace.__init__(self, marionette)
-        self.wait_for_page_loaded()
 
     @property
     def popular_apps_page(self):
@@ -25,15 +21,11 @@ class Home(Marketplace):
         return PopularApps(self.marionette)
 
 
-class PopularApps(Marketplace):
+class PopularApps(BaseRegion):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'ul.app-list')
 
     _gallery_apps_locator = (By.CSS_SELECTOR, '.app-list-app')
-
-    def __init__(self, marionette):
-        Marketplace.__init__(self, marionette)
-        self.wait_for_page_loaded()
 
     @property
     def popular_apps(self):

@@ -4,10 +4,10 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.app import Marketplace
+from marketplacetests.marketplace.regions.base_region import BaseRegion
 
 
-class Settings(Marketplace):
+class Settings(BaseRegion):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'form.account-settings')
 
@@ -28,15 +28,10 @@ class Settings(Marketplace):
     _my_apps_tab_locator = (By.CSS_SELECTOR, '.tab-link[href="/purchases"]')
     _login_required_message_locator = (By.CSS_SELECTOR, '.only-logged-out .notice')
 
-    def __init__(self, marionette):
-        Marketplace.__init__(self, marionette)
-        self.wait_for_page_loaded()
-        self.wait_for_sign_in_displayed()
-
     def tap_back(self):
         self.marionette.find_element(*self._back_button_locator).tap()
-        from marketplacetests.marketplace.app import Marketplace
-        return Marketplace(self.marionette)
+        from marketplacetests.marketplace.regions.home import Home
+        return Home(self.marionette)
 
     def wait_for_sign_in_displayed(self):
         self.wait_for_element_displayed(*self._sign_in_button_locator)
@@ -89,7 +84,7 @@ class Settings(Marketplace):
         self.marionette.find_element(*self._feedback_submit_button_locator).tap()
 
 
-class MyApps(Marketplace):
+class MyApps(Settings):
 
     _login_required_message_locator = (By.CSS_SELECTOR, '#account-settings .main div p')
     _my_apps_list_locator = (By.CSS_SELECTOR, '.item.result')

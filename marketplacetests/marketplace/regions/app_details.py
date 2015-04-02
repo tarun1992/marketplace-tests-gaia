@@ -4,10 +4,10 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.app import Marketplace
+from marketplacetests.marketplace.regions.base_region import BaseRegion
 
 
-class Details(Marketplace):
+class Details(BaseRegion):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'section.app-reviews')
 
@@ -16,10 +16,6 @@ class Details(Marketplace):
     _first_review_locator = (By.CSS_SELECTOR, '.reviews-wrapper li:first-child')
     _first_review_body_locator = (By.CSS_SELECTOR, '.reviews-wrapper .review-body')
     _install_button_locator = (By.CSS_SELECTOR, '.detail .info button.product.install')
-
-    def __init__(self, marionette):
-        Marketplace.__init__(self, marionette)
-        self.wait_for_page_loaded()
 
     @property
     def is_app_details_displayed(self):

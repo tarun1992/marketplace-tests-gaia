@@ -37,7 +37,7 @@ class MarketplaceGaiaTestCase(GaiaTestCase):
 
             marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
             home_page = marketplace.launch()
-            details_page = marketplace.navigate_to_app(self.app_name)
+            details_page = home_page.navigate_to_app(self.app_name)
             details_page.tap_install_button()
             self.wait_for_downloads_to_finish()
 
@@ -53,7 +53,7 @@ class MarketplaceGaiaTestCase(GaiaTestCase):
         self.acct = FxATestAccount(base_url=self.base_url).create_account()
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
-        settings = marketplace.login(self.acct.email, self.acct.password)
+        settings = home_page.login(self.acct.email, self.acct.password)
         settings.set_region('United States')
 
     @property

@@ -4,19 +4,15 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.app import Marketplace
+from marketplacetests.marketplace.regions.base_region import BaseRegion
 
 
-class Debug(Marketplace):
+class Debug(BaseRegion):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'section.debug')
 
     _back_button_locator = (By.ID, 'nav-back')
     _region_select_locator = (By.ID, 'debug-region')
-
-    def __init__(self, marionette):
-        Marketplace.__init__(self, marionette)
-        self.wait_for_page_loaded()
 
     def tap_back(self):
         self.marionette.find_element(*self._back_button_locator).tap()

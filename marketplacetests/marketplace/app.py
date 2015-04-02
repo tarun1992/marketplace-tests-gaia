@@ -41,8 +41,7 @@ class Marketplace(Base):
         if expect_success:
             self.switch_to_marketplace_frame()
             from marketplacetests.marketplace.regions.home import Home
-            home_page = Home(self.marionette)
-            return home_page
+            return Home(self.marionette)
 
     def switch_to_marketplace_frame(self):
         self.marionette.switch_to_frame()
@@ -87,12 +86,10 @@ class Marketplace(Base):
         return self.marionette.find_element(*self._notification_locator).text
 
     def _perform_search(self, term):
-        self.wait_for_page_loaded()
         search_box = Wait(self.marionette).until(
             expected.element_present(*self._search_locator))
         Wait(self.marionette).until(expected.element_displayed(search_box))
         search_box.send_keys(term)
-
         search_box.send_keys(Keys.RETURN)
 
     def search(self, term):
@@ -112,6 +109,7 @@ class Marketplace(Base):
                             % (region, self.notification_message))
 
         debug_screen.tap_back()
+        self.wait_for_page_loaded()
 
     def navigate_to_app(self, app_name):
         search_results = self.search(app_name).search_results

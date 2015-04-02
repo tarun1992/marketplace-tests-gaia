@@ -5,19 +5,15 @@
 from marionette.by import By
 from gaiatest.apps.base import PageRegion
 
-from marketplacetests.marketplace.app import Marketplace
+from marketplacetests.marketplace.regions.base_region import BaseRegion
 
 
-class SearchResults(Marketplace):
+class SearchResults(BaseRegion):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'ul.app-list')
 
     _search_results_area_locator = (By.ID, 'search-results')
     _search_result_locator = (By.CSS_SELECTOR, '#search-results li.item')
-
-    def __init__(self, marionette):
-        Marketplace.__init__(self, marionette)
-        self.wait_for_page_loaded()
 
     @property
     def search_results(self):
