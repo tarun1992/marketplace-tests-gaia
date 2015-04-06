@@ -19,7 +19,6 @@ class Marketplace(Base):
     _offline_message_locator = (By.CSS_SELECTOR, 'div.error-message[data-l10n="offline"]')
     _settings_button_locator = (By.CSS_SELECTOR, '.act-tray.active .header-button.settings')
     _home_button_locator = (By.CSS_SELECTOR, 'h1.site a')
-    _back_button_locator = (By.ID, 'nav-back')
     _notification_locator = (By.ID, 'notification-content')
 
     # Marketplace search on home page
@@ -128,9 +127,6 @@ class Marketplace(Base):
 
     def tap_home(self):
         self.marionette.find_element(*self._home_button_locator).tap()
-
-    def tap_back(self):
-        self.marionette.find_element(*self._back_button_locator).tap()
 
     @property
     def install_notification_message(self):

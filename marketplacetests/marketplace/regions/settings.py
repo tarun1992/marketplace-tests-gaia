@@ -23,15 +23,9 @@ class Settings(BaseRegion):
     _sign_in_button_on_my_apps_locator = (By.CSS_SELECTOR, '#account-settings a.button.persona:not(.register)')
     _sign_in_button_locator = (By.CSS_SELECTOR, 'a.button.login')
     _sign_out_button_locator = (By.CSS_SELECTOR, 'a.button.logout')
-    _back_button_locator = (By.ID, 'nav-back')
     _save_changes_button_locator = (By.XPATH, "//section[@id='account-settings']//button[text()='Save Changes']")
     _my_apps_tab_locator = (By.CSS_SELECTOR, '.tab-link[href="/purchases"]')
     _login_required_message_locator = (By.CSS_SELECTOR, '.only-logged-out .notice')
-
-    def tap_back(self):
-        self.marionette.find_element(*self._back_button_locator).tap()
-        from marketplacetests.marketplace.regions.home import Home
-        return Home(self.marionette)
 
     def wait_for_sign_in_displayed(self):
         self.wait_for_element_displayed(*self._sign_in_button_locator)

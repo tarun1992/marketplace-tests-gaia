@@ -11,7 +11,7 @@ class Debug(BaseRegion):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'section.debug')
 
-    _back_button_locator = (By.ID, 'nav-back')
+    _back_button_locator = (By.CSS_SELECTOR, '#site-header a.header-button.back')
     _region_select_locator = (By.ID, 'debug-region')
 
     def tap_back(self):
