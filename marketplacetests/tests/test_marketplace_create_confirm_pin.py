@@ -18,7 +18,7 @@ class TestMarketplaceCreateConfirmPin(MarketplaceGaiaTestCase):
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
         if self.apps.is_app_installed(app_name):
-            self.apps.uninstall(app_name)
+            raise Exception('The app %s is already installed.' % app_name)
 
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()

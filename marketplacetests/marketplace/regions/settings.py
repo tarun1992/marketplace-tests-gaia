@@ -83,6 +83,8 @@ class Settings(BaseRegion):
 
 class MyApps(Settings):
 
+    _page_loaded_locator = (By.CSS_SELECTOR, 'section.account.purchases')
+
     _login_required_message_locator = (By.CSS_SELECTOR, '#account-settings .main div p')
     _my_apps_list_locator = (By.CSS_SELECTOR, '.item.result')
     _settings_page_locator = (By.CSS_SELECTOR, '.tab-link[href="/settings"]')
@@ -97,3 +99,4 @@ class MyApps(Settings):
 
     def go_to_settings_page(self):
         self.marionette.find_element(*self._settings_page_locator).tap()
+        return Settings(self.marionette)
