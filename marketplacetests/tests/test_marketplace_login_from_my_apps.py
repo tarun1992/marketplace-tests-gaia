@@ -25,8 +25,7 @@ class TestMarketplaceLoginFromMyApps(MarketplaceGaiaTestCase):
 
         # switch back to Marketplace
         marketplace.switch_to_marketplace_frame()
-        my_apps.wait_for_notification_message_displayed()
-        my_apps.wait_for_notification_message_not_displayed()
+        my_apps.wait_for_login_success_notification()
 
         self.wait_for_condition(lambda m: len(my_apps.my_apps_list) > 0)
         settings = my_apps.go_to_settings_page()

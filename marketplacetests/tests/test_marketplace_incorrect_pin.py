@@ -37,7 +37,7 @@ class TestMarketplaceIncorrectPin(MarketplaceGaiaTestCase):
         self.assertIn(app_name, payment.app_name)
         payment.tap_cancel_button()
 
-        details_page.wait_for_notification_message_displayed('Payment cancelled.')
+        details_page.wait_for_payment_cancelled_notification()
         details_page.tap_install_button()
         payment.switch_to_payment_frame()
         payment.enter_pin(invalid_pin)
