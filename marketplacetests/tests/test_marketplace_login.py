@@ -24,9 +24,9 @@ class TestMarketplaceLogin(MarketplaceGaiaTestCase):
         # switch back to Marketplace
         marketplace.switch_to_marketplace_frame()
 
-        # wait for signed-in notification at the bottom of the screen to clear
+        # wait for the expected notification, and for user to be signed in
+        settings.wait_for_login_success_notification()
         settings.wait_for_sign_out_button()
-        settings.wait_for_notification_message_not_displayed()
 
         # Verify that user is logged in
         self.assertEqual(acct.email, settings.email)

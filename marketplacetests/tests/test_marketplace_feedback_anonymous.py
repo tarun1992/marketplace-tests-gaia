@@ -9,7 +9,6 @@ from marketplacetests.marketplace.app import Marketplace
 class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
 
     def test_marketplace_feedback_anonymous(self):
-        feedback_submitted_message = u'Feedback submitted. Thanks!'
         test_comment = 'This is a test comment.'
 
         # launch marketplace dev and go to marketplace
@@ -25,4 +24,4 @@ class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
         settings.submit_feedback()
 
         # wait for the notification
-        settings.wait_for_notification_message_displayed(feedback_submitted_message)
+        settings.wait_for_feedback_submitted_notification()

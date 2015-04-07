@@ -10,7 +10,6 @@ from marketplacetests.marketplace.app import Marketplace
 class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
 
     def test_marketplace_feedback_user(self):
-        feedback_submitted_message = u'Feedback submitted. Thanks!'
         test_comment = 'This is a test comment.'
 
         acct = FxATestAccount(base_url=self.base_url).create_account()
@@ -28,4 +27,4 @@ class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
         settings.submit_feedback()
 
         # wait for the notification
-        settings.wait_for_notification_message_displayed(feedback_submitted_message)
+        settings.wait_for_feedback_submitted_notification()

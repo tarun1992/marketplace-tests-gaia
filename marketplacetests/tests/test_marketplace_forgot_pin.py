@@ -25,7 +25,7 @@ class TestMarketplaceForgotPin(MarketplaceGaiaTestCase):
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
 
-        settings = marketplace.login(acct.email, acct.password)
+        settings = home_page.login(acct.email, acct.password)
 
         settings.set_region('United States')
 
@@ -38,7 +38,7 @@ class TestMarketplaceForgotPin(MarketplaceGaiaTestCase):
         self.assertIn(app_name, payment.app_name)
         payment.tap_cancel_button()
 
-        marketplace.wait_for_notification_message_displayed('Payment cancelled.')
+        details_page.wait_for_payment_cancelled_notification()
         details_page.tap_install_button()
         payment.switch_to_payment_frame()
         payment.tap_forgot_pin()

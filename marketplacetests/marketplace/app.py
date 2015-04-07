@@ -56,8 +56,7 @@ class Marketplace(Base):
         ff_accounts = settings.tap_sign_in()
         ff_accounts.login(username, password)
         self.switch_to_marketplace_frame()
-        self.wait_for_notification_message_displayed()
-        self.wait_for_notification_message_not_displayed()
+        self.wait_for_login_success_notification()
         return settings
 
     @property
@@ -65,24 +64,25 @@ class Marketplace(Base):
         self.wait_for_element_displayed(*self._offline_message_locator)
         return self.marionette.find_element(*self._offline_message_locator).text
 
-    def wait_for_notification_message_displayed(self, message=None):
-        if message:
-            Wait(marionette=self.marionette).until(
-                lambda m: self.notification_message == message)
-        self.wait_for_element_displayed(*self._notification_locator)
+    def wait_for_notification_message(self, message):
+        element = self.marionette.find_element(*self._notification_locator)
+        Wait(self.marionette).until(lambda m: element.text == message)
+        # Note: we cannot wait for the notification to be displayed first as that was
+        # causing a lot of test failures with timeouts. The assumption is that the
+        # notification already disappeared before we could check it
+        Wait(self.marionette).until(expected.element_not_displayed(element))
 
-    def wait_for_notification_message_not_displayed(self):
-        self.wait_for_element_not_displayed(*self._notification_locator)
+    def wait_for_login_success_notification(self):
+        self.wait_for_notification_message('You have been signed in')
+
+    def wait_for_region_updated_notification(self, region):
+        self.wait_for_notification_message('Region updated to %s' % region)
 
     def wait_for_page_loaded(self):
         Wait(self.marionette).until(
             expected.element_present(*self._body_loaded_locator))
         Wait(self.marionette).until(
             expected.element_present(*self._page_loaded_locator))
-
-    @property
-    def notification_message(self):
-        return self.marionette.find_element(*self._notification_locator).text
 
     def _perform_search(self, term):
         search_box = Wait(self.marionette).until(
@@ -102,10 +102,7 @@ class Marketplace(Base):
         debug_screen = Debug(self.marionette)
         debug_screen.select_region(region)
         # wait for notification of the change
-        self.wait_for_notification_message_displayed()
-        if region not in self.notification_message:
-            raise Exception('Unable to change region to %s. Notification displayed: %s'
-                            % (region, self.notification_message))
+        self.wait_for_region_updated_notification(region)
 
         debug_screen.tap_back()
         self.wait_for_page_loaded()

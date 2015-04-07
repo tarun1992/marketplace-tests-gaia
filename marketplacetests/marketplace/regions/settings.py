@@ -77,6 +77,9 @@ class Settings(BaseRegion):
         self.wait_for_element_displayed(*self._feedback_submit_button_locator)
         self.marionette.find_element(*self._feedback_submit_button_locator).tap()
 
+    def wait_for_feedback_submitted_notification(self):
+        self.wait_for_notification_message('Feedback submitted. Thanks!')
+
 
 class MyApps(Settings):
 

@@ -47,3 +47,9 @@ class Details(BaseRegion):
     def tap_install_button(self):
         self.wait_for_element_displayed(*self._install_button_locator)
         self.marionette.find_element(*self._install_button_locator).tap()
+
+    def wait_for_payment_cancelled_notification(self):
+        self.wait_for_notification_message('Payment cancelled.')
+
+    def wait_for_review_posted_notification(self):
+        self.wait_for_notification_message('Your review was successfully posted. Thanks!')
