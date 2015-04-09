@@ -65,12 +65,30 @@ class Marketplace(Base):
         return self.marionette.find_element(*self._offline_message_locator).text
 
     def wait_for_notification_message(self, message):
+        """This will wait for the specified message to appear in the DOM element
+           for the notification message, not for that message to be visible.
+
+           This is required as often the message is no longer visible when we check,
+           but the expected text still exists in the DOM element.
+
+           This is also the reason that we wait for the element to no longer be
+           visible at the end of this method, whereas we do not wait for it to
+           first be visible.
+        """
         element = self.marionette.find_element(*self._notification_locator)
-        Wait(self.marionette).until(lambda m: element.text == message)
-        # Note: we cannot wait for the notification to be displayed first as that was
-        # causing a lot of test failures with timeouts. The assumption is that the
-        # notification already disappeared before we could check it
+        Wait(self.marionette).until(self._element_inner_html_contains(element, message))
         Wait(self.marionette).until(expected.element_not_displayed(element))
+
+    class _element_inner_html_contains(object):
+
+        def __init__(self, element, text):
+            self.element = element
+            self.needle = text
+
+        def __call__(self, marionette):
+            haystack = marionette.execute_script('return arguments[0].innerHTML;', [self.element])
+            marionette.log('Looking for "%s" in "%s"' % (self.needle, haystack))
+            return self.needle in haystack
 
     def wait_for_login_success_notification(self):
         self.wait_for_notification_message('You have been signed in')
