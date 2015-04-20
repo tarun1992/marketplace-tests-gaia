@@ -4,11 +4,11 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.regions.base_region import BaseRegion
-from marketplacetests.marketplace.regions.app_details import Details
+from marketplacetests.marketplace.pages.base import BasePage
+from marketplacetests.marketplace.pages.app_details import Details
 
 
-class AddReview(BaseRegion):
+class AddReview(BasePage):
     """
     Page for adding reviews.
     """

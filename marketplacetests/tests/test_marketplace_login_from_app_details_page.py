@@ -7,7 +7,7 @@ import random
 
 from fxapom.fxapom import FxATestAccount
 
-from marketplacetests.marketplace.regions.add_review import AddReview
+from marketplacetests.marketplace.pages.add_review import AddReview
 from marketplacetests.marketplace_gaia_test import MarketplaceGaiaTestCase
 from marketplacetests.marketplace.app import Marketplace
 
@@ -20,9 +20,8 @@ class TestMarketplaceLoginFromAppDetailsPage(MarketplaceGaiaTestCase):
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
 
-        popular_apps_page = home_page.popular_apps_page
-        app_name = popular_apps_page.popular_apps[0].name
-        details_page = popular_apps_page.navigate_to_app(app_name)
+        app_name = home_page.first_free_app_name
+        details_page = home_page.navigate_to_app(app_name)
 
         ff_accounts = details_page.tap_write_review(logged_in=False)
         ff_accounts.login(acct.email, acct.password)

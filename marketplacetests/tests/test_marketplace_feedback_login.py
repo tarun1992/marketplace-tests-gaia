@@ -14,17 +14,12 @@ class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
 
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
-        # launch marketplace dev and go to marketplace
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
-        settings = home_page.login(acct.email, acct.password)
+        home_page.login(acct.email, acct.password)
 
-        # go to feedback tab
-        settings.select_setting_feedback()
+        feedback = home_page.show_menu().tap_feedback()
+        feedback.enter_feedback(test_comment)
+        feedback.submit_feedback()
 
-        # enter and submit your feedback
-        settings.enter_feedback(test_comment)
-        settings.submit_feedback()
-
-        # wait for the notification
-        settings.wait_for_feedback_submitted_notification()
+        feedback.wait_for_feedback_submitted_notification()

@@ -4,18 +4,14 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.regions.base_region import BaseRegion
+from marketplacetests.marketplace.pages.base import BasePage
 
 
-class Debug(BaseRegion):
+class Debug(BasePage):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'section.debug')
 
-    _back_button_locator = (By.CSS_SELECTOR, '#site-header a.header-button.back')
     _region_select_locator = (By.ID, 'debug-region')
-
-    def tap_back(self):
-        self.marionette.find_element(*self._back_button_locator).tap()
 
     def select_region(self, region):
         element = self.marionette.find_element(*self._region_select_locator)

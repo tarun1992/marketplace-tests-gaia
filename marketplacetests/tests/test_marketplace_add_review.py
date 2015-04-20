@@ -19,11 +19,10 @@ class TestMarketplaceAddReview(MarketplaceGaiaTestCase):
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
 
-        popular_apps_page = home_page.popular_apps_page
-        app_name = popular_apps_page.popular_apps[0].name
+        app_name = home_page.first_free_app_name
 
-        settings = popular_apps_page.login(acct.email, acct.password)
-        details_page = settings.navigate_to_app(app_name)
+        home_page.login(acct.email, acct.password)
+        details_page = home_page.navigate_to_app(app_name)
 
         current_time = str(time.time()).split('.')[0]
         rating = random.randint(1, 5)

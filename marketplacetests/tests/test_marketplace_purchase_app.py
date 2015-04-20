@@ -25,11 +25,11 @@ class TestMarketplacePurchaseApp(MarketplaceGaiaTestCase):
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
 
-        settings = home_page.login(acct.email, acct.password)
+        home_page.login(acct.email, acct.password)
 
-        settings.set_region('United States')
+        home_page.set_region('United States')
 
-        details_page = settings.navigate_to_app(self.app_name)
+        details_page = home_page.navigate_to_app(self.app_name)
         details_page.tap_install_button()
 
         payment = Payment(self.marionette)

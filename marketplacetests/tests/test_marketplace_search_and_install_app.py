@@ -16,20 +16,23 @@ class TestSearchMarketplaceAndInstallApp(MarketplaceGaiaTestCase):
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
 
-        popular_apps_page = home_page.popular_apps_page
-        self.app_name = popular_apps_page.popular_apps[0].name
-        app_author = popular_apps_page.popular_apps[0].author
+        # Find a free app to install
+        results = home_page.search(':free').search_results
+        app = results[0]
+        self.app_name = app.name
+        app_author = app.author
 
         if self.apps.is_app_installed(self.app_name):
             raise Exception('The app %s is already installed.' % self.app_name)
 
         marketplace.switch_to_marketplace_frame()
 
-        results = popular_apps_page.search(self.app_name)
+        results_page = home_page.search(self.app_name)
+        results = results_page.search_results
 
-        self.assertGreater(len(results.search_results), 0, 'No results found.')
+        self.assertGreater(len(results), 0, 'No results found.')
 
-        first_result = results.search_results[0]
+        first_result = results[0]
 
         self.assertEquals(first_result.name, self.app_name, 'First app has the wrong name.')
         self.assertEquals(first_result.author, app_author, 'First app has the wrong author.')
@@ -44,7 +47,7 @@ class TestSearchMarketplaceAndInstallApp(MarketplaceGaiaTestCase):
         confirm_install = ConfirmInstall(self.marionette)
         confirm_install.tap_confirm()
 
-        self.assertEqual('%s installed' % self.app_name, results.install_notification_message)
+        self.assertEqual('%s installed' % self.app_name, results_page.install_notification_message)
 
         # Press Home button
         self.device.touch_home_button()

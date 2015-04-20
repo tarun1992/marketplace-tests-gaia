@@ -11,17 +11,11 @@ class TestMarketplaceFeedback(MarketplaceGaiaTestCase):
     def test_marketplace_feedback_anonymous(self):
         test_comment = 'This is a test comment.'
 
-        # launch marketplace dev and go to marketplace
         marketplace = Marketplace(self.marionette, self.MARKETPLACE_DEV_NAME)
         home_page = marketplace.launch()
 
-        # go to settings page
-        settings = home_page.tap_settings()
-        settings.select_setting_feedback()
+        feedback = home_page.show_menu().tap_feedback()
+        feedback.enter_feedback(test_comment)
+        feedback.submit_feedback()
 
-        # enter and submit your feedback
-        settings.enter_feedback(test_comment)
-        settings.submit_feedback()
-
-        # wait for the notification
-        settings.wait_for_feedback_submitted_notification()
+        feedback.wait_for_feedback_submitted_notification()

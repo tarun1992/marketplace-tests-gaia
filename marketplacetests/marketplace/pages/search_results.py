@@ -5,10 +5,10 @@
 from marionette.by import By
 from gaiatest.apps.base import PageRegion
 
-from marketplacetests.marketplace.regions.base_region import BaseRegion
+from marketplacetests.marketplace.pages.base import BasePage
 
 
-class SearchResults(BaseRegion):
+class SearchResults(BasePage):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'ul.app-list')
 
@@ -46,5 +46,5 @@ class Result(PageRegion):
     def tap_app(self):
         app_name = self.root_element.find_element(*self._name_locator)
         app_name.tap()
-        from marketplacetests.marketplace.regions.app_details import Details
+        from marketplacetests.marketplace.pages.app_details import Details
         return Details(self.marionette)

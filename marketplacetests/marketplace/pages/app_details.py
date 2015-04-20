@@ -4,10 +4,10 @@
 
 from marionette.by import By
 
-from marketplacetests.marketplace.regions.base_region import BaseRegion
+from marketplacetests.marketplace.pages.base import BasePage
 
 
-class Details(BaseRegion):
+class Details(BasePage):
 
     _page_loaded_locator = (By.CSS_SELECTOR, 'section.app-reviews')
 
@@ -41,7 +41,7 @@ class Details(BaseRegion):
             from marketplacetests.firefox_accounts.app import FirefoxAccounts
             return FirefoxAccounts(self.marionette)
         else:
-            from marketplacetests.marketplace.regions.add_review import AddReview
+            from marketplacetests.marketplace.pages.add_review import AddReview
             return AddReview(self.marionette)
 
     def tap_install_button(self):

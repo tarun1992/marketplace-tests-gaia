@@ -16,16 +16,14 @@ class TestMarketplaceLogin(MarketplaceGaiaTestCase):
 
         acct = FxATestAccount(base_url=self.base_url).create_account()
 
-        settings = home_page.tap_settings()
-        ff_accounts = settings.tap_sign_in()
-
-        ff_accounts.login(acct.email, acct.password)
+        home_page.login(acct.email, acct.password)
 
         # switch back to Marketplace
         marketplace.switch_to_marketplace_frame()
 
         # wait for the expected notification, and for user to be signed in
-        settings.wait_for_login_success_notification()
+        home_page.wait_for_login_success_notification()
+        settings = home_page.show_menu().tap_settings()
         settings.wait_for_sign_out_button()
 
         # Verify that user is logged in
