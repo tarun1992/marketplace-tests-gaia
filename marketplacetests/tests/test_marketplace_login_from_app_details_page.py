@@ -28,6 +28,7 @@ class TestMarketplaceLoginFromAppDetailsPage(MarketplaceGaiaTestCase):
 
         # switch back to Marketplace
         marketplace.switch_to_marketplace_frame()
+        details_page.wait_for_login_success_notification()
 
         current_time = str(time.time()).split('.')[0]
         rating = random.randint(1, 5)
