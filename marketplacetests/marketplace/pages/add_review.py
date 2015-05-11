@@ -28,5 +28,10 @@ class AddReview(BasePage):
     def write_a_review(self, rating, body):
         self.set_review_rating(rating)
         self.type_review(body)
-        self.marionette.find_element(*self._submit_review_button_locator).tap()
+        submit_button = self.marionette.find_element(*self._submit_review_button_locator)
+        # This workaround is required for gaia v2.0, but can be removed in later versions
+        # as the bug has been fixed
+        # Bug 937053 - tap() method should calculate elementInView from the coordinates of the tap
+        self.marionette.execute_script('arguments[0].scrollIntoView(false);', [submit_button])
+        submit_button.tap()
         return Details(self.marionette)
